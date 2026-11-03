@@ -1,0 +1,22 @@
+# PostgreSQL 18 + pgvector + pg_wait_sampling + pg_stat_kcache, configured for the demos.
+#   docker compose --env-file .env -f docker/compose.yml up -d --build --wait
+services:
+  postgres:
+    build: .
+    image: pg-performance-lab:18
+    container_name: pg_performance
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-perf}
+      POSTGRES_DB: ${PG_DB:-perfdb}
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    ports:
+      - "${PG_PORT:-5432}:5432"
+    volumes:
+      - ./perf.conf:/etc/postgresql/perf.conf:ro
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    shm_size: 1g
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${PG_DB:-perfdb}"]
+      interval: 3s
+      timeout: 3s
+      retries: 30

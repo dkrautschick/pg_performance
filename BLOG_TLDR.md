@@ -1,0 +1,7 @@
+# TL;DR: Thinking clearly about PostgreSQL (and AI) performance
+
+- **The idea:** Cary Millsap's *Thinking Clearly about Performance* (DOAG 2013, still the best 30 pages on the topic): performance is an attribute of each experience, not of a system. Name the task, measure its response time, state goals as percentiles ("under 5 ms in 90%, under 9 ms in 99%"), not as averages or CPU utilization.
+- **The method:** A profile is an invoice, call count times latency per line, and it must add up to the response time. In PostgreSQL: `pg_stat_statements`, `pg_wait_sampling`, `pg_stat_kcache`, `auto_explain`, snapshots with `pg_profile`. In the demo, 90% of a transaction's time was invisible to the server, so measure at the client too.
+- **The fastest call is no call:** One index turned 16,600 buffer visits into 14; one set-based query instead of an ORM's N+1 turned 130 ms into 2.6 ms. Load adds queueing and coherency delay: size against the knee, cap active connections near the cores.
+- **AI workloads:** Recall is part of performance. With a 1% filter, pgvector's HNSW default returned 0.3 of 10 rows, without an error; iterative scans or a plain B-tree fix it. Indexes can be bigger than the table; `halfvec` nearly halves them. In a RAG request the database is usually a small line of the invoice.
+- **GPUs:** In current research, data movement, not the vector math, dominates GPU vector search in databases. GPUs, vector databases and bigger instances are all "upgrade the hardware", the last step of Method R, after the profile says so.

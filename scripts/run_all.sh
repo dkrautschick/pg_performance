@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# The whole tour, in the order of the blog post. About 10 minutes with the defaults on a small box.
+source "$(dirname "$0")/00_lib.sh"
+D="$(dirname "$0")"
+"$D/01_setup.sh"
+"$D/10_profile.sh"
+"$D/15_eliminate_calls.sh"
+"$D/20_percentiles.sh"
+"$D/30_queueing.sh"
+"$D/40_roundtrips.sh"
+"$D/50_vector_seed.sh"
+"$D/51_vector_recall.sh"
+"$D/52_vector_filter.sh"
+"$D/53_vector_footprint.sh"
+say "All done. Raw pgbench output and logs are in $OUT"
